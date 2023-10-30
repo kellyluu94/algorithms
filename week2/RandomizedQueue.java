@@ -9,7 +9,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // construct an empty randomized queue
     public RandomizedQueue() {
-        array = (Item[]) new Object[10];
+        array = (Item[]) new Object[1];
         size = 0;
     }
 
@@ -46,7 +46,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             array[i] = array[i + 1];
         }
         size--;
-        if (size > 0 && size > array.length / 4) {
+        if (size > 0 && size == array.length / 4) {
             resize(array.length / 2);
         }
         return item;
