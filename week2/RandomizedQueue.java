@@ -1,21 +1,6 @@
-// Randomized queue.
-// A randomized queue is similar to a stack or queue, except that the item removed is chosen uniformly at random among items in the data structure.
-
-// Iterator.
-// Each iterator must return the items in uniformly random order. The order of two or more iterators to the same randomized queue must be mutually independent; each iterator must maintain its own random order.
-
-// Corner cases.  Throw the specified exception for the following corner cases:
-// Throw an IllegalArgumentException if the client calls enqueue() with a null argument.
-// Throw a java.util.NoSuchElementException if the client calls either sample() or dequeue() when the randomized queue is empty.
-// Throw a java.util.NoSuchElementException if the client calls the next() method in the iterator when there are no more items to return.
-// Throw an UnsupportedOperationException if the client calls the remove() method in the iterator.
-
-// Unit testing.  Your main() method must call directly every public constructor and method to verify that they work as prescribed (e.g., by printing results to standard output).
-
-// Performance requirements.  Your randomized queue implementation must support each randomized queue operation (besides creating an iterator) in constant amortized time. That is, any intermixed sequence of m randomized queue operations (starting from an empty queue) must take at most cm steps in the worst case, for some constant c. A randomized queue containing n items must use at most 48n + 192 bytes of memory. Additionally, your iterator implementation must support operations next() and hasNext() in constant worst-case time; and construction in linear time; you may (and will need to) use a linear amount of extra memory per iterator.
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
 import edu.princeton.cs.algs4.StdRandom;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
@@ -24,7 +9,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // construct an empty randomized queue
     public RandomizedQueue() {
-        array = (Itemp[]) new Object[10];
+        array = (Item[]) new Object[10];
         size = 0;
     }
 
@@ -91,18 +76,27 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     private class RandomizedQueueIterator implements Iterator<Item> {
-        private Node current = first;
+        private int current = 0;
+        private final Item[] randomizedItems;
+
+        public RandomizedQueueIterator() {
+            randomizedItems = (Item[]) new Object[size];
+            for (int i = 0; i < size; i++) {
+                randomizedItems[i] = array[i];
+            }
+            StdRandom.shuffle(randomizedItems);
+        }
 
         public boolean hasNext() {
-            return current != null;
+            return current < size;
         }
 
         public Item next() {
             if (!hasNext()) {
                 throw new NoSuchElementException("There are no more items to return");
             }
-            Item item = current.item;
-            current = current.next;
+            Item item = randomizedItems[current];
+            current++;
             return item;
         }
 
@@ -112,6 +106,22 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     // unit testing (required)
-    public static void main(String[] args)
-
+    public static void main(String[] args) {
+        RandomizedQueue<Integer> deque = new RandomizedQueue<>();
+        System.out.println("Is deque empty? " + deque.isEmpty());
+        deque.enqueue(1);
+        deque.enqueue(2);
+        System.out.println("Is deque empty? " + deque.isEmpty());
+        deque.enqueue(3);
+        deque.enqueue(4);
+        System.out.println("What is the size of deque? " + deque.size());
+        deque.enqueue(5);
+        deque.enqueue(6);
+        System.out.println("Remove " + deque.dequeue());
+        System.out.println("Pick a random element " + deque.sample());
+        System.out.println("Deque items from front to back:");
+        for (Integer item : deque) {
+            System.out.println(item);
+        }
+    }
 }
