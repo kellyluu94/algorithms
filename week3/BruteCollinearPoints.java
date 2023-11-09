@@ -20,6 +20,10 @@ public class BruteCollinearPoints {
       if (points == null || Arrays.asList(points).contains(null)) {
          throw new IllegalArgumentException("Argument to BruteCollinearPoints is null or contains null points");
       }
+      List<Point> pointList = Arrays.asList(points);
+      if (pointList.size() != pointList.stream().distinct().count()) {
+         throw new IllegalArgumentException("Argument to FastCollinearPoints contains a repeated point");
+      }
       int n = points.length;
       for (int i = 0; i < n; i++) {
          for (int j = i + 1; j < n; j++) {
